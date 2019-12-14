@@ -1,4 +1,4 @@
-import pygame, os, pandas as pd, random
+import pygame, os, pandas as pd, random, time
 from pygame.locals import *
 
 
@@ -16,15 +16,21 @@ def load_png(filename, fit_w, fit_h):
 
 
 pygame.init()
-windowSurface = pygame.display.set_mode((600,800), 0, 32)
-pygame.display.set_caption('Hello world!')
+windowSurface = pygame.display.set_mode((600,900), 0, 32)
+pygame.display.set_caption('Guess the Flag!')
 
 WHITE = (255, 255, 255)
+RED = (255, 0 , 0)
+GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 basicFont = pygame.font.SysFont(None, 48)
 
+correct_answer_position = 0
+answer_names = ["","",""]
 
 def draw_flag():
+    global correct_answer_position
+
     windowSurface.fill(WHITE)
     countries = pd.read_csv(os.path.join('data', 'countries.csv'))
     print(len(countries))
@@ -66,13 +72,32 @@ def draw_flag():
     pygame.display.update()
 
 
-def draw_country_name(country_name, answer_position):
-    text = basicFont.render(country_name, True, WHITE, BLUE)
+def draw_country_name(country_name, answer_position, colour = BLUE):
+    text = basicFont.render(country_name, True, colour, WHITE)
     textRect = text.get_rect()
     textRect.centerx = windowSurface.get_rect().centerx
     textRect.centery = 400 + 100 * answer_position
     windowSurface.blit(text, textRect)
+    answer_names[answer_position - 1] = country_name
 
+def guess(my_guess):
+    draw_country_name(answer_names[my_guess - 1], my_guess, GREEN)
+    global correct_answer_position
+    if my_guess == correct_answer_position:
+        text = basicFont.render('YAY!', True, GREEN, WHITE)
+        textRect = text.get_rect()
+        textRect.centerx = windowSurface.get_rect().centerx
+        textRect.centery = 800
+        windowSurface.blit(text, textRect)
+    else:
+        text = basicFont.render('BOO!', True, RED, WHITE)
+        textRect = text.get_rect()
+        textRect.centerx = windowSurface.get_rect().centerx
+        textRect.centery = 800
+        windowSurface.blit(text, textRect)
+    pygame.display.update()
+    time.sleep(3)
+    draw_flag()
 
 draw_flag()
 
@@ -88,3 +113,9 @@ while active:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             draw_flag()
+        if event.key == pygame.K_1:
+            guess(1)
+        if event.key == pygame.K_2:
+            guess(2)
+        if event.key == pygame.K_3:
+            guess(3)
