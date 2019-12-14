@@ -89,14 +89,28 @@ def guess(my_guess):
         textRect.centerx = windowSurface.get_rect().centerx
         textRect.centery = 800
         windowSurface.blit(text, textRect)
+        pygame.mixer.Sound('sounds/yay.wav').play()
     else:
         text = basicFont.render('BOO!', True, RED, WHITE)
         textRect = text.get_rect()
         textRect.centerx = windowSurface.get_rect().centerx
         textRect.centery = 800
         windowSurface.blit(text, textRect)
+        text = basicFont.render('It was', True, RED, WHITE)
+        textRect = text.get_rect()
+        textRect.centerx = windowSurface.get_rect().centerx
+        textRect.centery = 830
+        windowSurface.blit(text, textRect)
+        text = basicFont.render(answer_names[correct_answer_position-1], True, RED, WHITE)
+        textRect = text.get_rect()
+        textRect.centerx = windowSurface.get_rect().centerx
+        textRect.centery = 860
+        windowSurface.blit(text, textRect)
+        pygame.mixer.Sound('sounds/boo.wav').play()
+
     pygame.display.update()
     time.sleep(3)
+    pygame.event.clear()
     draw_flag()
 
 draw_flag()
